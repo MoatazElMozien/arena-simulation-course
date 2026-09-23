@@ -9,6 +9,18 @@ import FlowSim from './sims/FlowSim.tsx'
 import Reveal from './components/Reveal.tsx'
 import { useStore } from './store.tsx'
 import Landing from './pages/Landing.tsx'
+import Admin from './pages/Admin.tsx'
+
+/** Fires once per session at /api/track (silent no-op if analytics isn't configured). */
+function useVisitTracking() {
+  useEffect(() => {
+    if (sessionStorage.getItem('ac-tracked')) return
+    sessionStorage.setItem('ac-tracked', '1') // set first: at most one attempt per session
+    fetch('api/track', { method: 'POST', keepalive: true }).catch(() => {
+      /* analytics optional — never break the app over it */
+    })
+  }, [])
+}
 
 function DocPage({ route }: { route: string }) {
   const doc = getDoc(route)
@@ -141,11 +153,15 @@ function CourseLayout() {
 export default function App() {
   const location = useLocation()
   const { theme } = useStore()
+  useVisitTracking()
 
   // theme application on first paint
   useEffect(() => {
     if (theme) document.documentElement.dataset.theme = theme
   }, [theme])
+
+  // Hidden private stats panel (no nav links point here)
+  if (location.pathname === '/admin') return <Admin />
 
   // Landing page at "/"; everything else renders the course shell
   const isLanding = location.pathname === '/' || location.pathname === ''

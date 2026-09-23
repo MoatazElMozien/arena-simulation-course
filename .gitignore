@@ -14,3 +14,8 @@ npm-debug.log*
 Thumbs.db
 .vscode/
 .idea/
+
+# Env (keep .env.example)
+.env
+.env.*
+!.env.example

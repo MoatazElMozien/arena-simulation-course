@@ -57,10 +57,43 @@ Course content is plain Markdown in the **parent directory** (`../README.md`,
 of content needed. The app is the single rendering layer; Markdown stays the
 single source of truth.
 
+## Private stats panel (analytics)
+
+The app tracks **privacy-friendly unique visitors** via a serverless API and
+shows them on a hidden, password-protected dashboard at **`/#/admin`**.
+
+- `POST /api/track` — called once per browser session; stores
+  `sha256(IP + user-agent)` (no cookies, no raw IPs) in Redis.
+- `GET /api/stats?token=…` — returns totals + last 14 days; protected by a
+  timing-safe check against the `ADMIN_TOKEN` env var.
+- `webapp/server/redis.ts` — zero-dependency Upstash Redis REST client.
+
+### One-time setup
+
+1. **Get free Redis REST credentials** — either
+   [upstash.com](https://upstash.com) (free tier) or Vercel Marketplace →
+   *Upstash for Redis*.
+2. **Vercel → Project → Settings → Environment Variables**, add:
+
+   | Variable | Value |
+   |----------|-------|
+   | `ADMIN_TOKEN` | a long random secret — this is your admin password |
+   | `UPSTASH_REDIS_REST_URL` | from Upstash |
+   | `UPSTASH_REDIS_REST_TOKEN` | from Upstash |
+
+3. Deploy (Root Directory = `webapp`, framework preset = Vite, build `npm run build`, output `dist`).
+4. Open **`https://your-domain/#/admin`**, enter `ADMIN_TOKEN` — done. 🔒
+
+Copy `.env.example` → `.env.local` to test locally with `vercel dev`.
+
+> The panel is intentionally unlinked anywhere in the UI, and the API refuses
+> requests without the correct token — knowing the URL alone is not enough.
+
 ## Roadmap (sell-ready)
 
 - [x] Landing page with pricing tiers (CTA stubs)
 - [x] TypeScript + lint + format tooling
+- [x] Private analytics: unique visitors + daily chart at `/#/admin`
 - [ ] Stripe checkout for the Pro tier
 - [ ] Auth + server-side progress sync (Supabase/Firebase/Clerk)
 - [ ] SEO/meta + OG images (migrate to Next.js if marketing demands SSR)
