@@ -11,14 +11,19 @@ import { useStore } from './store'
 import Landing from './pages/Landing'
 import Admin from './pages/Admin'
 
-/** Fires once per session at /api/track (silent no-op if analytics isn't configured). */
+/** Fires once per session at /api/track — only marks the session as tracked
+ *  AFTER the server confirms (so failed attempts retry on the next load). */
 function useVisitTracking() {
   useEffect(() => {
     if (sessionStorage.getItem('ac-tracked')) return
-    sessionStorage.setItem('ac-tracked', '1') // set first: at most one attempt per session
-    fetch('api/track', { method: 'POST', keepalive: true }).catch(() => {
-      /* analytics optional — never break the app over it */
-    })
+    fetch('api/track', { method: 'POST', keepalive: true })
+      .then((r) => r.json() as Promise<{ ok?: boolean }>)
+      .then((j) => {
+        if (j?.ok) sessionStorage.setItem('ac-tracked', '1')
+      })
+      .catch(() => {
+        /* analytics optional — retry on next page load, never break the app */
+      })
   }, [])
 }
 
