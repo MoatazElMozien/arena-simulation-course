@@ -1,8 +1,8 @@
 import { useEffect, useState, type ReactNode } from 'react'
 import { NavLink, useLocation } from 'react-router-dom'
-import { docs, lessons } from '../content.ts'
-import { useProgress, QuizScoreBadge, CompleteToggle } from './Badges.tsx'
-import { useStore, type Theme } from '../store.tsx'
+import { docs, lessons } from '../content'
+import { useProgress, QuizScoreBadge, CompleteToggle } from './Badges'
+import { useStore, type Theme } from '../store'
 
 function ThemeToggle() {
   const { theme, setTheme } = useStore()

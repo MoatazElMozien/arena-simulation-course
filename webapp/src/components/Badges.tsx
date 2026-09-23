@@ -1,5 +1,5 @@
-import { useStore } from '../store.tsx'
-import { lessons } from '../content.ts'
+import { useStore } from '../store'
+import { lessons } from '../content'
 
 /** Quiz scoring summary — rendered in the topbar when viewing a quiz page. */
 export function QuizScoreBadge({ route }: { route: string }) {

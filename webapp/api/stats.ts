@@ -1,6 +1,6 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node'
 import { timingSafeEqual } from 'node:crypto'
-import { kvConfigured, kvPipeline } from '../server/redis.ts'
+import { kvConfigured, kvPipeline } from '../server/redis'
 
 interface DayStat {
   date: string

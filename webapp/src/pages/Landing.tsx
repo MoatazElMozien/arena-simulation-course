@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom'
-import Reveal from '../components/Reveal.tsx'
+import Reveal from '../components/Reveal'
 
 /**
  * Marketing landing page — the "sell it later" foundation.

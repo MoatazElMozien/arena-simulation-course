@@ -1,6 +1,6 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node'
 import { createHash } from 'node:crypto'
-import { kvConfigured, kvPipeline } from '../server/redis.ts'
+import { kvConfigured, kvPipeline } from '../server/redis'
 
 const utcDay = (): string => new Date().toISOString().slice(0, 10)
 

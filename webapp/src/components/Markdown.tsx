@@ -2,7 +2,7 @@ import { useMemo, useState, type ReactNode } from 'react'
 import ReactMarkdown, { type Components } from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import { useNavigate, useLocation } from 'react-router-dom'
-import { useStore } from '../store.tsx'
+import { useStore } from '../store'
 
 function slugify(text: string): string {
   return text

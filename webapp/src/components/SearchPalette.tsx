@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { searchDocs, type SearchResult } from '../content.ts'
+import { searchDocs, type SearchResult } from '../content'
 
 export default function SearchPalette({ onClose }: { onClose: () => void }) {
   const [query, setQuery] = useState('')

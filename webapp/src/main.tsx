@@ -1,8 +1,8 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { HashRouter } from 'react-router-dom'
-import App from './App.tsx'
-import { StoreProvider } from './store.tsx'
+import App from './App'
+import { StoreProvider } from './store'
 import './styles.css'
 
 const rootEl = document.getElementById('root')

@@ -1,5 +1,5 @@
 import { useEffect, useState, type ReactNode } from 'react'
-import Reveal from '../components/Reveal.tsx'
+import Reveal from '../components/Reveal'
 
 /* All diagrams are lightweight animated SVGs that trigger on scroll (Reveal). */
 
