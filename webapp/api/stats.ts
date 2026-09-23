@@ -14,14 +14,27 @@ const KV_URL = process.env.UPSTASH_REDIS_REST_URL || process.env.KV_REST_API_URL
 const KV_TOKEN = process.env.UPSTASH_REDIS_REST_TOKEN || process.env.KV_REST_API_TOKEN
 
 async function kvPipeline(cmds: (string | number)[][]): Promise<unknown[]> {
-  const res = await fetch(`${KV_URL}/pipeline`, {
+  const base = (KV_URL || '').replace(/\/+$/, '')
+  const res = await fetch(`${base}/pipeline`, {
     method: 'POST',
     headers: { Authorization: `Bearer ${KV_TOKEN}`, 'Content-Type': 'application/json' },
     body: JSON.stringify(cmds),
   })
   if (!res.ok) throw new Error(`KV error ${res.status}: ${await res.text()}`)
-  const json = (await res.json()) as { result?: { result: unknown }[] }
-  return (json.result || []).map((r) => r.result)
+  // Upstash /pipeline returns a top-level ARRAY of {result,error}; a single
+  // command returns {result}. Handle both — and never swallow command errors.
+  const data: unknown = await res.json()
+  const items = Array.isArray(data)
+    ? data
+    : data && typeof data === 'object' && Array.isArray((data as { result?: unknown[] }).result)
+      ? (data as { result: unknown[] }).result
+      : null
+  if (!items) throw new Error('Unexpected KV pipeline response shape')
+  for (const it of items) {
+    const err = (it as { error?: unknown } | null)?.error
+    if (err) throw new Error(`KV command error: ${String(err)}`)
+  }
+  return items.map((it) => (it && typeof it === 'object' && 'result' in it ? (it as { result: unknown }).result : null))
 }
 
 interface DayStat {
